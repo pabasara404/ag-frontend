@@ -22,16 +22,14 @@
           <n-form-item label="First Name" path="user.firstName">
             <n-input v-model:value="formValue.name" placeholder="Enter Name" />
           </n-form-item>
-          <!--          <n-form-item label="Birthday">-->
-          <!--            <n-date-picker-->
-          <!--              v-model:value="formValue.date_of_birth"-->
-          <!--            />-->
-          <!--          </n-form-item>-->
           <n-form-item label="Phone" path="phone">
             <n-input
               v-model:value="formValue.contact_number"
               placeholder="Phone Number"
             />
+          </n-form-item>
+          <n-form-item label="NIC" path="nic">
+            <n-input v-model:value="formValue.nic" placeholder="NIC" />
           </n-form-item>
           <n-form-item label="Role" path="role">
             <n-dropdown
@@ -52,18 +50,10 @@
             />
           </n-form-item>
           <n-form-item>
-            <n-date-picker type="date" />
+            <n-date-picker v-model:value="selectedDOB" type="date" />
           </n-form-item>
           <n-form-item>
-            <n-upload
-              action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-              :headers="{
-                'naive-info': 'hello!',
-              }"
-              :data="{
-                'naive-data': 'cool! naive!',
-              }"
-            >
+            <n-upload action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f">
               <n-button>Upload Profile Picture</n-button>
             </n-upload>
           </n-form-item>
@@ -74,7 +64,7 @@
           </n-form-item>
         </n-form>
       </n-layout>
-      <template #footer> Footer </template>
+      <template #footer></template>
     </n-card>
   </n-modal>
 </template>
@@ -104,6 +94,7 @@ watch(
 const formValue = ref({
   id: "",
   name: "",
+  nic: "",
   address: "",
   contact_number: "",
   role: "",
@@ -129,7 +120,6 @@ const rules = {
     trigger: ["input"],
   },
 };
-const timestamp = ref(118313526e4);
 const options = [
   {
     label: "Marina Bay Sands",
@@ -148,6 +138,7 @@ const options = [
     key: "The Beverly Hills Hotel, Los Angeles",
   },
 ];
+
 const selectedDOB = computed({
   get: () => {
     return moment(formValue.value.date_of_birth).valueOf();

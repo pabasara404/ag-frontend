@@ -79,6 +79,10 @@ const columns = [
     key: "name",
   },
   {
+    title: "NIC",
+    key: "nic",
+  },
+  {
     title: "Address",
     key: "address",
   },
@@ -86,10 +90,10 @@ const columns = [
     title: "Contact Number",
     key: "contact_number",
   },
-  {
-    title: "Role",
-    key: "role",
-  },
+  // {
+  //   title: "Role",
+  //   key: "role",
+  // },
   {
     title: "DOB",
     key: "date_of_birth",
@@ -146,6 +150,7 @@ function addNewEmployee() {
   selectedEmployee.value = {
     id: "",
     name: "",
+    nic: "",
     address: "",
     contact_number: "",
     role: "",

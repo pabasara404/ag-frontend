@@ -102,7 +102,6 @@ import {
   Business as BusinessIcon,
   Car as CarIcon,
   Cart as CartIcon,
-  Construct as ConstructIcon,
   Diamond as DiamondIcon,
   Document as DocumentIcon,
   Leaf as LeafIcon,
@@ -127,7 +126,7 @@ const menuOptions = [
     label: "User Details Management",
     key: "userDetailsManagement",
     icon: renderIcon(PersonIcon),
-    authorizedBy: [""],
+    authorizedBy: ["Admin"],
     children: [
       {
         label: () =>
@@ -141,7 +140,7 @@ const menuOptions = [
             { default: () => "Employee Details Management" }
           ),
         key: "employeeDetailsManagement",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: () =>
@@ -155,106 +154,106 @@ const menuOptions = [
             { default: () => "Grama Niladhari Details Management" }
           ),
         key: "gramaNiladhariDetails",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: "Citizen Details Management",
         key: "citizenDetailsManagement",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: "Field Officer Details Management",
         key: "fieldOfficerDetailsManagement",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
     ],
   },
   {
     label: "Grama Niladari Division Details Management",
     key: "gramaNiladariDivisionDetailsManagement",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(MapIcon),
   },
   {
     label: "Timber Cutting Process and Permits",
     key: "timberCuttingProcessAndPermits",
-    authorizedBy: ["Employeee", "Client"],
+    authorizedBy: ["Employeee", "Client","Admin"],
     icon: renderIcon(LeafIcon),
   },
   {
     label: "Timber Transportation Process and Permits",
     key: "timberTransportationProcessAndPermits",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(CarIcon),
   },
   {
     label: "Business Registration Certificates",
     key: "businessRegistrationCertificates",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(BusinessIcon),
   },
   {
     label: "Requesting & Issuing Income Certificates",
     key: "requestingAndIssuingIncomeCertificates",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(BusinessIcon),
   },
   {
     label: "Welfare Information Verification",
     key: "welfareInformationVerification",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(LogoBitcoinIcon),
     children: [
       {
         label: "Grade 5 Scholarship Information Verification",
         key: "grade5",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: "Agrahara Information Verification",
         key: "agrahara",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: "President Fund Information Verification",
         key: "presidentFund",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
       {
         label: "Mahapola Application Processing",
         key: "mahapola",
-        authorizedBy: ["Employeee"],
+        authorizedBy: ["Employeee","Admin"],
       },
     ],
   },
   {
     label: "Animal Transportation Permit",
     key: "animalTransportationPermit",
-    authorizedBy: ["Client"],
+    authorizedBy: ["Client","Admin"],
     icon: renderIcon(CartIcon),
   },
   {
     label: "Pawning Licensing",
     key: "pawningLicensing",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(DiamondIcon),
   },
   {
     label: "Excise Licensing",
     key: "exciseLicensing",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(WineIcon),
   },
   {
     label: "Valuation Report Issuing",
     key: "valuationReportIssuing",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(DocumentIcon),
   },
   {
     label: "Payment Management",
     key: "paymentManagement",
-    authorizedBy: ["Employeee"],
+    authorizedBy: ["Employeee","Admin"],
     icon: renderIcon(BookIcon),
   },
 ];
