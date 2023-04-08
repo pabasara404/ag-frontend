@@ -1,33 +1,20 @@
 <template>
   <n-layout style="height: 540px" has-sider>
     <n-layout style="padding-left: 8px" :inverted="inverted">
-      <n-page-header>
-        <template #title> Employee Details Management </template>
-        <template #header>
-          <n-breadcrumb>
-            <n-breadcrumb-item>Podcast</n-breadcrumb-item>
-            <n-breadcrumb-item>Best Collection</n-breadcrumb-item>
-            <n-breadcrumb-item>Ultimate Best Collection</n-breadcrumb-item>
-            <n-breadcrumb-item>Anyway.FM</n-breadcrumb-item>
-          </n-breadcrumb>
-        </template>
-        <template #extra>
-          <n-space>
-            <n-button @click="addNewEmployee">
-              <template #icon
-                ><n-icon><add-icon /></n-icon></template
-              >Add New Employee</n-button
-            >
-            <n-dropdown :options="options" placement="bottom-start">
-              <n-button :bordered="false" style="padding: 0 4px">
-                ···
-              </n-button>
-            </n-dropdown>
-          </n-space>
-        </template>
+      <PageHeader title="Employee Details Management" />
+      <div class="flex justify-end pb-6">
+        <n-space>
+          <n-button @click="addNewEmployee">
+            <template #icon
+              ><n-icon><add-icon /></n-icon></template
+            >Add New Employee</n-button
+          >
+          <n-dropdown :options="options" placement="bottom-start">
+            <n-button :bordered="false" style="padding: 0 4px"> ··· </n-button>
+          </n-dropdown>
+        </n-space>
+      </div>
 
-        <n-divider />
-      </n-page-header>
       <n-space vertical>
         <n-data-table
           :loading="isLoading"
@@ -55,9 +42,9 @@ import {
   Eye as EyeIcon,
 } from "@vicons/ionicons5";
 import Http from "@/services/Http";
-import { NButton } from "naive-ui";
+import { NButton, NIcon } from "naive-ui";
 import EditEmployeeModal from "@/components/employee/EditEmployeeModal.vue";
-
+import PageHeader from "@/components/PageHeader.vue";
 const isShowingEditEmployeeModal = ref(false);
 const selectedEmployee = ref(false);
 const inverted = ref(false);
@@ -79,6 +66,10 @@ const columns = [
     key: "name",
   },
   {
+    title: "NIC",
+    key: "nic",
+  },
+  {
     title: "Address",
     key: "address",
   },
@@ -86,10 +77,10 @@ const columns = [
     title: "Contact Number",
     key: "contact_number",
   },
-  {
-    title: "Role",
-    key: "role",
-  },
+  // {
+  //   title: "Role",
+  //   key: "role",
+  // },
   {
     title: "DOB",
     key: "date_of_birth",
@@ -105,6 +96,7 @@ const columns = [
           type: "info",
           strong: true,
           secondary: true,
+          // renderIcon: EyeIcon,
           size: "small",
           onClick: () => {
             selectedEmployee.value = row;
@@ -138,6 +130,11 @@ const columns = [
   },
 ];
 
+
+const components = {
+  PageHeader,
+};
+
 onMounted(() => {
   fetchEmployee();
 });
@@ -146,6 +143,7 @@ function addNewEmployee() {
   selectedEmployee.value = {
     id: "",
     name: "",
+    nic: "",
     address: "",
     contact_number: "",
     role: "",
@@ -155,6 +153,9 @@ function addNewEmployee() {
   isShowingEditEmployeeModal.value = true;
 }
 
+function renderIcon(icon) {
+  return () => h(NIcon, null, { default: () => h(icon) });
+}
 async function fetchEmployee() {
   isLoading.value = true;
   const { data } = await Http.get("employee");

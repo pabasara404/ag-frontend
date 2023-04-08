@@ -35,6 +35,25 @@ const router = createRouter({
           },
           component: () => import("../views/employee/EmployeeView.vue"),
         },
+        {
+          path: "/timberCutting",
+          name: "timberCutting",
+          meta: {
+            middleware: "auth",
+            title: `Timber Cutting Management`,
+          },
+          component: () => import("../views/TimberCutting/HomeView.vue"),
+        },
+        {
+          path: "/timberCuttingApplication",
+          name: "timberCuttingApplication",
+          meta: {
+            middleware: "auth",
+            title: `Timber Cutting Application`,
+          },
+          component: () =>
+            import(`../views/Admin/TimberCuttingApplicationView.vue`),
+        },
       ],
     },
     {

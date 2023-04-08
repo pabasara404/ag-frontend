@@ -5,19 +5,20 @@
   >
     <n-card
       style="width: 600px"
-      title="Modal"
       :bordered="false"
       size="huge"
       role="dialog"
       aria-modal="true"
     >
-      <template #header-extra> Edit Employee </template>
       <n-layout style="padding-left: 8px">
-        <n-page-header
-          ><n-icon size="50"><arrow-back-outline-icon /></n-icon
-          ><n-h2 v-if="!isNewEmployee">Edit Employee</n-h2>
-          <n-h2 v-else>Add New Employee</n-h2>
+        <n-page-header>
+          <div class="flex justify-between ...">
+            <n-h2 v-if="!isNewEmployee">Edit Employee</n-h2>
+            <n-h2 v-else>Add New Employee</n-h2>
+            <n-icon size="25"><CloseIcon /></n-icon>
+          </div>
         </n-page-header>
+
         <n-form ref="formRef" :model="formValue">
           <n-form-item label="First Name" path="user.firstName">
             <n-input v-model:value="formValue.name" placeholder="Enter Name" />
@@ -69,8 +70,8 @@
                   Click or drag a file to this area to upload
                 </n-text>
                 <n-p depth="3" style="margin: 8px 0 0 0">
-                  Strictly prohibit from uploading sensitive information. For example,
-                  your bank card PIN or your credit card expiry date.
+                  Strictly prohibit from uploading sensitive information. For
+                  example, your bank card PIN or your credit card expiry date.
                 </n-p>
               </n-upload-dragger>
             </n-upload>
@@ -90,8 +91,11 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useMessage } from "naive-ui";
-import { ArrowBackOutline as ArrowBackOutlineIcon,
-  ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
+import {
+  ArrowBackOutline as ArrowBackOutlineIcon,
+  Close as CloseIcon,
+  ArchiveOutline as ArchiveIcon,
+} from "@vicons/ionicons5";
 import Http from "@/services/Http";
 import moment from "moment";
 
@@ -163,7 +167,9 @@ const selectedDOB = computed({
     return moment(formValue.value.date_of_birth).valueOf();
   },
   set: (epoch) => {
-    formValue.value.date_of_birth = moment.unix(epoch/1000).format("YYYY-MM-DD");
+    formValue.value.date_of_birth = moment
+      .unix(epoch / 1000)
+      .format("YYYY-MM-DD");
   },
 });
 

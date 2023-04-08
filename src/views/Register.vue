@@ -4,22 +4,13 @@
       <n-input v-model:value="form.email" @keydown.enter.prevent />
     </n-form-item>
     <n-form-item path="password" label="Password">
-      <n-input
-        v-model:value="form.password"
-        type="password"
-      />
+      <n-input v-model:value="form.password" type="password" />
     </n-form-item>
 
     <n-row>
       <n-col :span="24">
         <div style="display: flex; justify-content: flex-end">
-          <n-button
-            round
-            type="primary"
-            @click="login"
-          >
-            Validate
-          </n-button>
+          <n-button round type="primary" @click="login"> Validate </n-button>
         </div>
       </n-col>
     </n-row>
@@ -35,22 +26,26 @@ const form = ref({
   password: "",
 });
 
-async function register(){
-  this.processing = true
-  await axios.get('/sanctum/csrf-cookie')
-  await axios.post('/register',this.user).then(response=>{
+async function register() {
+  this.processing = true;
+  await axios.get("/sanctum/csrf-cookie");
+  await axios
+    .post("/register", this.user)
+    .then((response) => {
       this.validationErrors = {};
-    this.signIn()
-  }).catch(({response})=>{
-    if(response.status===422){
-      this.validationErrors = response.data.errors
-    }else{
-      this.validationErrors = {}
-      alert(response.data.message)
-    }
-  }).finally(()=>{
-    this.processing = false
-  })
+      this.signIn();
+    })
+    .catch(({ response }) => {
+      if (response.status === 422) {
+        this.validationErrors = response.data.errors;
+      } else {
+        this.validationErrors = {};
+        alert(response.data.message);
+      }
+    })
+    .finally(() => {
+      this.processing = false;
+    });
 }
 </script>
 
