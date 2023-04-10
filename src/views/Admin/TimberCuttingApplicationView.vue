@@ -19,6 +19,8 @@
       <n-li>
         If the deed has life interest owner/ owners, a letter of consent
         regarding timber cutting ( Should've certified by the Grama Niladhari )
+      </n-li>
+      <n-li>
         If the life interest owner/owners have died applicant should present
         certified copy of the death certificate.
       </n-li>
