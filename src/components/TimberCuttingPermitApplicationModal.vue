@@ -13,7 +13,7 @@
       </n-page-header>
 
       <n-form ref="formRef" :model="formValue">
-        <n-form-item label="Name of the Applicant" path="user.name">
+        <n-form-item label="Name of the Applicant" path="name">
           <n-input
             v-model:value="formValue.name"
             placeholder="Enter Name of the Applicant"
@@ -24,7 +24,7 @@
             v-model:value="formValue.address"
             placeholder="Address of the Applicant"
           /> </n-form-item
-        ><n-form-item label="Telephone No." path="phone">
+        ><n-form-item label="Telephone No." path="contact_number">
           <n-input
             v-model:value="formValue.contact_number"
             placeholder="Telephone Number" /></n-form-item
@@ -88,13 +88,13 @@
         </n-form-item>
         <n-form-item label="Land Deed Number" path="land_deed_number">
           <n-input
-            v-model:value="formValue.land_deed_number"
+            v-model:value="formValue.deed_details.land_deed_number"
             placeholder="Land Deed Number"
           />
         </n-form-item>
-        <n-form-item label="Land deed date" path="land_deed_date">
-          <n-date-picker v-model:value="selectedDeedDate" type="date" />
-        </n-form-item>
+<!--        <n-form-item label="Land deed date" path="land_deed_date">-->
+<!--          <n-date-picker v-model:value="selectedDeedDate" type="date" />-->
+<!--        </n-form-item>-->
         <n-form-item label="Ownership of land" path="ownershipOfLand">
           <n-radio
             :checked="
@@ -131,13 +131,13 @@
         </n-form-item>
         <n-form-item label="Land Name" path="land_name">
           <n-input
-            v-model:value="formValue.land_name"
+            v-model:value="formValue.land_details.land_name"
             placeholder="Land Name"
           />
         </n-form-item>
         <n-form-item label="Land Size in perches" path="land_size">
           <n-input
-            v-model:value="formValue.land_size"
+            v-model:value="formValue.land_details.land_size"
             placeholder="Land Size in perches"
           />
           <n-tooltip trigger="hover">
@@ -149,39 +149,57 @@
         </n-form-item>
         <n-form-item label="Plan No." path="plan_number">
           <n-input
-            v-model:value="formValue.plan_number"
+            v-model:value="formValue.land_details.plan_number"
             placeholder="Plan No."
           />
         </n-form-item>
-        <n-form-item label="Plan Date" path="plan_date">
-          <n-date-picker v-model:value="selectedPlanDate" type="date" />
-        </n-form-item>
+<!--        <n-form-item label="Plan Date" path="plan_date">-->
+<!--          <n-date-picker v-model:value="selectedPlanDate" type="date" />-->
+<!--        </n-form-item>-->
         <n-form-item label="Plan plot No." path="plan_plot_no">
           <n-input
-            v-model:value="formValue.plan_plot_no"
+            v-model:value="formValue.land_details.plan_plot_number"
             placeholder="Plan plot No."
           />
         </n-form-item>
         <n-form-item label="Boundaries:" path="boundaries">
-          <n-input v-model:value="formValue.north" placeholder="To North" />
-          <n-input v-model:value="formValue.south" placeholder="To South" />
-          <n-input v-model:value="formValue.east" placeholder="To East" />
-          <n-input v-model:value="formValue.west" placeholder="To West" />
+          <n-input
+            v-model:value="formValue.boundaries.north"
+            placeholder="To North"
+          />
+          <n-input
+            v-model:value="formValue.boundaries.south"
+            placeholder="To South"
+          />
+          <n-input
+            v-model:value="formValue.boundaries.east"
+            placeholder="To East"
+          />
+          <n-input
+            v-model:value="formValue.boundaries.west"
+            placeholder="To West"
+          />
         </n-form-item>
         <n-form-item
           label="Number of trees currently on this plot:"
           path="no_of_trees"
         >
           <n-input
-            v-model:value="formValue.jackfruit"
+            v-model:value="formValue.tree_count.jackfruit"
             placeholder="Jackfruit"
           />
           <n-input
-            v-model:value="formValue.breadfruit"
+            v-model:value="formValue.tree_count.breadfruit"
             placeholder="Breadfruit"
           />
-          <n-input v-model:value="formValue.coconut" placeholder="Coconut" />
-          <n-input v-model:value="formValue.palmyra" placeholder="Palmyra" />
+          <n-input
+            v-model:value="formValue.tree_count.coconut"
+            placeholder="Coconut"
+          />
+          <n-input
+            v-model:value="formValue.tree_count.palmyra"
+            placeholder="Palmyra"
+          />
         </n-form-item>
         <n-form-item label="Details of trees requested to be cut">
           <n-button @click="addEmptyRow"
@@ -339,7 +357,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, h } from "vue";
+import { computed, ref, watch, h, onMounted } from "vue";
 import { NButton, useMessage } from "naive-ui";
 import {
   ArchiveOutline as ArchiveIcon,
@@ -358,18 +376,19 @@ const isShowing = ref(false);
 const emit = defineEmits(["close", "save"]);
 const props = defineProps({
   isShowing: Boolean,
-  employee: Object,
+  application: Object,
 });
-const non_commercial_use_checked_value = ref(null);
-const timber_seller_checked_value = ref(null);
-const ownership_of_land_checked_value = ref(null);
+const non_commercial_use_checked_value = ref(false);
+const timber_seller_checked_value = ref(false);
+const ownership_of_land_checked_value = ref(false);
+const timberCuttingPermitApplications = ref([]);
 const selectedValues = ref([]);
 // const GNDivisionOptions from gndivision table
 watch(
   () => props.isShowing,
   (newValue) => {
     isShowing.value = newValue;
-    formValue.value = { ...props.employee };
+    formValue.value = { ...props.application };
   }
 );
 const formValue = ref({
@@ -380,22 +399,30 @@ const formValue = ref({
   timber_seller_checked_value: "",
   non_commercial_use_checked_value: "",
   grama_niladari_division: "",
-  land_deed_number: "",
-  land_deed_date: "",
+  deed_details: {
+    land_deed_number: "",
+    land_deed_date: "",
+  },
   ownership_of_land_checked_value: "",
-  land_name: "",
-  land_size: "",
-  plan_number: "",
-  plan_date: "",
-  plan_plot_number: "",
-  north: "",
-  south: "",
-  east: "",
-  west: "",
-  breadfruit: "",
-  coconut: "",
-  jackfriut: "",
-  palmyra: "",
+  land_details: {
+    land_name: "",
+    land_size: "",
+    plan_number: "",
+    plan_date: "",
+    plan_plot_number: "",
+  },
+  boundaries: {
+    north: "",
+    south: "",
+    east: "",
+    west: "",
+  },
+  tree_count: {
+    breadfruit: "",
+    coconut: "",
+    jackfriut: "",
+    palmyra: "",
+  },
   tree_details: [
     {
       sub_no: "",
@@ -454,34 +481,45 @@ const certifyAndSubmit = () => {
 };
 const selectedDeedDate = computed({
   get: () => {
-    return moment(formValue.value.land_deed_date).valueOf();
+    return moment(formValue.value.deed_details.land_deed_date).valueOf();
   },
   set: (epoch) => {
-    formValue.value.land_deed_date = moment
+    formValue.value.deed_details.land_deed_date = moment
       .unix(epoch / 1000)
       .format("YYYY-MM-DD");
   },
 });
 const selectedPlanDate = computed({
   get: () => {
-    return moment(formValue.value.plan_date).valueOf();
+    return moment(formValue.value.land_details.plan_date).valueOf();
   },
   set: (epoch) => {
-    formValue.value.plan_date = moment.unix(epoch / 1000).format("YYYY-MM-DD");
+    formValue.value.land_details.plan_date = moment
+      .unix(epoch / 1000)
+      .format("YYYY-MM-DD");
   },
 });
 
-const isNewTimberApplication = computed(() => {
+const isNewTimberCuttingPermitApplication = computed(() => {
   return !formValue.value.id;
 });
 
+onMounted(() => {
+  fetchTimberCuttingPermitApplication();
+});
+
 async function save() {
-  if (isNewTimberApplication.value) {
-    await Http.post(`newTimberApplication`, formValue.value);
+  if (isNewTimberCuttingPermitApplication.value) {
+    await Http.post(`timberCuttingPermitApplication`, formValue.value);
     emit("save");
 
     return;
   }
+}
+
+async function fetchTimberCuttingPermitApplication() {
+  await Http.get("timberCuttingPermitApplication");
+  timberCuttingPermitApplications.value = data;
 }
 
 const handleSelect = (value) => {

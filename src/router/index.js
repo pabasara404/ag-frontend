@@ -3,6 +3,7 @@ import Login from "@/views/LoginView.vue";
 import store from "@/store";
 import AppLayout from "@/views/AppLayout.vue";
 
+// const authUserRole = "Admin";
 const authUserRole = store.state.auth.user.role;
 console.log(authUserRole);
 const router = createRouter({

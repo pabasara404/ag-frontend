@@ -130,7 +130,6 @@ const columns = [
   },
 ];
 
-
 const components = {
   PageHeader,
 };
