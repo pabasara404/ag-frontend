@@ -29,46 +29,42 @@
             v-model:value="formValue.contact_number"
             placeholder="Telephone Number" /></n-form-item
         ><n-form-item label="Are you a Timber seller?" path="timberSeller">
-          <n-radio
-            :checked="timber_seller_checked_value === 'Yes'"
-            value="Yes"
-            name="timberSeller"
-            v-model:value="formValue.timber_seller_checked_value"
-            @change="handleChange('timberSeller', $event)"
-          >
-            Yes
-          </n-radio>
-          <n-radio
-            :checked="timber_seller_checked_value === 'No'"
-            value="No"
-            name="timberSeller"
-            v-model:value="formValue.timber_seller_checked_value"
-            @change="handleChange('timberSeller', $event)"
-          >
-            No
-          </n-radio> </n-form-item
+          <n-radio-group v-model:value="formValue.timber_seller_checked_value" name="timberSeller">
+            <n-space>
+              <n-radio
+                  :value="true"
+                  label="Yes"
+              >
+                Yes
+              </n-radio>
+              <n-radio
+                  :value="false"
+                  label="No"
+              >
+                No
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+         </n-form-item
         ><n-form-item
           label="Are you cutting trees for non-commercial use?"
           path="timberSeller"
-        >
+        ><n-radio-group v-model:value="formValue.non_commercial_use_checked_value" name="nonCommercialUse">
+        <n-space>
           <n-radio
-            :checked="non_commercial_use_checked_value === 'Yes'"
-            value="Yes"
-            v-model:value="formValue.non_commercial_use_checked_value"
-            name="nonCommercialUse"
-            @change="handleChange('nonCommercialUse', $event)"
+              :value="true"
+              label="Yes"
           >
             Yes
           </n-radio>
           <n-radio
-            :checked="non_commercial_use_checked_value === 'No'"
-            value="No"
-            v-model:value="formValue.non_commercial_use_checked_value"
-            name="nonCommercialUse"
-            @change="handleChange('nonCommercialUse', $event)"
+              :value="false"
+              label="No"
           >
             No
           </n-radio>
+        </n-space>
+      </n-radio-group>
         </n-form-item>
         <n-form-item
           label="Grama Niladari Division"
@@ -77,11 +73,11 @@
           <n-dropdown
             trigger="hover"
             placement="bottom-start"
-            :options="options"
-            @select="handleSelect"
+            :options="gnDivisionsForDropdown"
+            @select = "selectGramaNiladariDivision"
           >
             <n-button
-              >Grama Niladari Division
+              >{{selectedGramaNiladariDivision ? selectedGramaNiladariDivision.label : 'Select an option'}}
               <n-icon><ArrowDropDownRoundIcon /></n-icon>
             </n-button>
           </n-dropdown>
@@ -96,38 +92,13 @@
 <!--          <n-date-picker v-model:value="selectedDeedDate" type="date" />-->
 <!--        </n-form-item>-->
         <n-form-item label="Ownership of land" path="ownershipOfLand">
-          <n-radio
-            :checked="
-              ownership_of_land_checked_value === 'Freehold(Sinnakkara)'
-            "
-            value="Freehold(Sinnakkara)"
-            name="ownershipOfLand"
-            v-model:value="formValue.ownership_of_land_checked_value"
-            @change="handleChange('ownershipOfLand', $event)"
-          >
-            Freehold (Sinnakkara)
-          </n-radio>
-          <n-radio
-            :checked="ownership_of_land_checked_value === 'Co-owner'"
-            value="Co-owner"
-            name="ownershipOfLand"
-            v-model:value="formValue.ownership_of_land_checked_value"
-            @change="handleChange('ownershipOfLand', $event)"
-          >
-            Co-owner
-          </n-radio>
-          <n-radio
-            :checked="
-              ownership_of_land_checked_value ===
-              'Granted by Government(Swarnabhumi)'
-            "
-            value="Granted by Government(Swarnabhumi)"
-            name="ownershipOfLand"
-            v-model:value="formValue.ownership_of_land_checked_value"
-            @change="handleChange('ownershipOfLand', $event)"
-          >
-            Granted by Government (Swarnabhumi)
-          </n-radio>
+          <n-radio-group v-model:value="formValue.ownership_of_land_checked_value" name="ownershipOfLand">
+            <n-space>
+              <n-radio :value="'Freehold(Sinnakkara)'" label="Yes">Freehold(Sinnakkara)</n-radio>
+              <n-radio :value="'Co-owner'" label="No">Co-owner</n-radio>
+              <n-radio :value="'Granted by Government(Swarnabhumi)'" label="No">Granted by Government(Swarnabhumi)</n-radio>
+            </n-space>
+          </n-radio-group>
         </n-form-item>
         <n-form-item label="Land Name" path="land_name">
           <n-input
@@ -219,8 +190,8 @@
             <n-grid :y-gap="8" :cols="2">
               <n-gi>
                 <n-checkbox
-                  value="to a common developmental need"
-                  label="to a common developmental need"
+                  value="To a common developmental need"
+                  label="To a common developmental need"
                 />
               </n-gi>
               <n-gi>
@@ -249,8 +220,8 @@
               </n-gi>
               <n-gi>
                 <n-checkbox
-                  value=" Because it does not bear fruit"
-                  label=" Because it does not bear fruit"
+                  value="Because it does not bear fruit"
+                  label="Because it does not bear fruit"
                 />
               </n-gi>
               <n-gi>
@@ -344,7 +315,7 @@
         >
         <div class="flex justify-end">
           <n-form-item>
-            <n-button @click="certifyAndSubmit()">
+            <n-button @click="certifyAndSubmit">
               Certify and Submit
             </n-button>
           </n-form-item>
@@ -369,6 +340,9 @@ import {
 } from "@vicons/material";
 import Http from "@/services/Http";
 import moment from "moment";
+import axios from 'axios';
+
+import TableRow from './TableRow.vue';
 
 const formRef = ref(null);
 const message = useMessage();
@@ -383,7 +357,8 @@ const timber_seller_checked_value = ref(false);
 const ownership_of_land_checked_value = ref(false);
 const timberCuttingPermitApplications = ref([]);
 const selectedValues = ref([]);
-// const GNDivisionOptions from gndivision table
+const GNDivisionOptions = ref([]);
+
 watch(
   () => props.isShowing,
   (newValue) => {
@@ -398,7 +373,12 @@ const formValue = ref({
   contact_number: "",
   timber_seller_checked_value: "",
   non_commercial_use_checked_value: "",
-  grama_niladari_division: "",
+  grama_niladari_division: {
+    id: "",
+    gn_code: "",
+    name: "",
+    mpa_code: ""
+  },
   deed_details: {
     land_deed_number: "",
     land_deed_date: "",
@@ -476,9 +456,15 @@ const options = [
     key: "The Beverly Hills Hotel, Los Angeles",
   },
 ];
-const certifyAndSubmit = () => {
+// const certifyAndSubmit = () => {
+//   console.log(formValue.value);
+// };
+function certifyAndSubmit(){
   console.log(formValue.value);
-};
+  // isShowing.value = false;
+  emit('close', false)
+}
+
 const selectedDeedDate = computed({
   get: () => {
     return moment(formValue.value.deed_details.land_deed_date).valueOf();
@@ -504,6 +490,21 @@ const isNewTimberCuttingPermitApplication = computed(() => {
   return !formValue.value.id;
 });
 
+const gnDivisionsForDropdown = computed(() => {
+  return GNDivisionOptions.value.map((gnDivisionOption)=>{
+    return {
+      key : gnDivisionOption.id,
+      label: gnDivisionOption.name,
+    }
+  })
+})
+
+const selectedGramaNiladariDivision = computed(() => {
+  return gnDivisionsForDropdown.value.find((gnDivisionForDropdown) => {
+    return gnDivisionForDropdown.key === formValue.value.grama_niladari_division.id;
+  })
+})
+
 onMounted(() => {
   fetchTimberCuttingPermitApplication();
 });
@@ -522,9 +523,30 @@ async function fetchTimberCuttingPermitApplication() {
   timberCuttingPermitApplications.value = data;
 }
 
-const handleSelect = (value) => {
-  formValue.value.grama_niladari_division = value;
+const fetchGnDivisions = async () => {
+  try {
+    const response = await Http.get("gnDivision");
+    const data = response.data.data; // Assuming the API response contains the data you need
+    // console.log(data);
+    GNDivisionOptions.value = data;
+    // console.log(GNDivisionOptions.value);
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+onMounted(fetchGnDivisions);
+
+// const handleSelect = (value) => {
+//   formValue.value.grama_niladari_division = value;
+//   // console.log(value);
+// };
+
+function selectGramaNiladariDivision(key){
+  formValue.value.grama_niladari_division = GNDivisionOptions.value.find((GNDivisionOption)=>{
+    return GNDivisionOption.id === key;
+  });
+}
 function handleValidateClick(e) {
   e.preventDefault();
   formRef.value?.validate((errors) => {
